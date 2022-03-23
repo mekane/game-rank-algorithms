@@ -40,5 +40,7 @@ Ideally we especially want good performance on the comparisons since those will 
 ## 02 Tree Sort
 
 It seems like a tree sort should be among the most efficient, and I wanted to try writing one. Hacked together
-my own version.
+my own version. Made a class to hold the data, unit tested it, and wrote a script to insert
+a bunch of different lists of varying lengths into the tree. Averaged the data and confirmed
+that the number of comparisons required is O(N log N).
 

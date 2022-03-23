@@ -1,37 +1,36 @@
-const games = require('./games.js');
+const {games, testList} = require('./games.js');
 const {shuffle} = require('./common');
 const {BinaryTree} = require('./BinaryTree');
 
-function compare(node, newNode) {
-    if (typeof node !== 'object' || typeof newNode !== 'object')
-        return;
+/*========== MAIN PROGRAM ==========*/
 
-    if (node.myRank < newNode.myRank) {
-        node.right = newNode;
-        newNode.parent = node;
-    } else {
-        node.left = newNode;
-        newNode.parent = node;
+let counts;
+let tree;
+const results = {};
+for (let size = 4; size < 21; size++) {
+    counts = [];
+
+    const games = testList(size);
+
+    for (let rep = 0; rep < 10; rep++) {
+        shuffle(games);
+        tree = new BinaryTree();
+        games.forEach(g => tree.insert(g));
+        counts.push(tree.comparisons);
     }
 
-    comparisons++;
+    results[size] = counts;
 }
 
-let step = 1;
-let comparisons = 0;
 
+Object.keys(results).forEach(size => {
+    console.log(size, average(results[size]), '   ', results[size]);
+});
 
-/*========== MAIN PROGRAM ==========*/
-shuffle(games);
-console.log(games);
+function average(list) {
+    const total = list.reduce((total, next) => total + next, 0);
+    return Math.round(total / list.length);
+}
 
-const tree = new BinaryTree();
-tree.insert(games[0]);
-tree.insert(games[1]);
-tree.insert(games[2]);
-
-console.log(`Ranking ${games.length} games took ${step} total steps with ${comparisons} total comparisons`);
-
-console.log(tree.root);
-console.log(tree.root.left);
-console.log(tree.root.right);
+//console.log(tree.sortedList());
+//console.log(`Ranking ${games.length} games took ${tree.comparisons} total comparisons`);

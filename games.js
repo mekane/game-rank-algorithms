@@ -33,15 +33,19 @@ const games = [
     }
 ];
 
-/*
-//Pad out the list of games to a given length for complexity testing
-while (games.length < 100) {
-    const i = games.length + 1;
-    games.push({
-        name: 'Trash ' + i,
-        myRank: i
-    });
+function testList(number) {
+    const games = [];
+    while (games.length < number) {
+        const i = games.length + 1;
+        games.push({
+            name: 'Game ' + i,
+            myRank: i
+        });
+    }
+    return games;
 }
-*/
 
-module.exports = games;
+module.exports = {
+    games,
+    testList
+};

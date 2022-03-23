@@ -1,4 +1,4 @@
-const games = require('./games.js');
+const { games } = require('./games.js');
 const { shuffle } = require('./common.js');
 
 function compare(a, b) {
