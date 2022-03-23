@@ -135,7 +135,47 @@ describe('The BinaryTree class', () => {
         }
 
         expect(tree.root).to.deep.equal(expectedTree);
-    })
+    });
+
+    it('inserts multiple values correctly', () => {
+        const values = [4, 2, 3, 6, 5, 1, 7];
+
+        const tree = new BinaryTree();
+        values.forEach(v => tree.insert(testValue(v)));
+
+        const expectedTree = {
+            left: {
+                left: {
+                    left: null,
+                    value: testValue(1),
+                    right: null
+                },
+                value: testValue(2),
+                right: {
+                    left: null,
+                    value: testValue(3),
+                    right: null
+                }
+            },
+            value: testValue(4),
+            right: {
+                left: {
+                    left: null,
+                    value: testValue(5),
+                    right: null
+                },
+                value: testValue(6),
+                right: {
+                    right: null,
+                    value: testValue(7),
+                    left: null
+                }
+            }
+        };
+
+        expect(tree.root).to.deep.equal(expectedTree);
+    });
+
 });
 
 //TODO keep the tree balanced
