@@ -8,8 +8,9 @@ class Node {
 
 
 class BinaryTree {
-    constructor() {
+    constructor(rootValue = null) {
         this.root = new Node()
+        this.insert(rootValue);
     }
 
     /**
@@ -17,14 +18,39 @@ class BinaryTree {
      * @param value Object
      */
     insert(value) {
-        if (this.root.value === null) {
-            this.root.value = value;
-        }
-        else {
-            if (value.myRank < this.root.value.myRank)
-                this.root.left = new Node(value);
-            else if (value.myRank > this.root.value.myRank)
-                this.root.right = new Node(value);
+        if (value)
+            this._insertNode(this.root, value);
+    }
+
+    /* private */
+    _insertNode(node, value) {
+        //console.log(`inserting ${value.name} at ${node.value ? node.value.name : 'empty node'}`);
+        if (node.value === null) {
+            //console.log('  node value is null - set value');
+            node.value = value;
+        } else {
+            //console.log('  (node has value)');
+            if (value.myRank < node.value.myRank) {
+                //console.log(`  value (${value.myRank}) < node (${node.value.myRank})`);
+                if (node.left === null) {
+                    //console.log(`    set left to new node (${value.myRank})`);
+                    node.left = new Node(value);
+                } else {
+                    //console.log('    recurse to ' + node.left.value.name);
+                    this._insertNode(node.left, value);
+                }
+            } else if (value.myRank > node.value.myRank) {
+                //console.log(`  value (${value.myRank}) > node (${node.value.myRank})`);
+                if (node.right === null) {
+                    //console.log(`    set right to new node (${value.myRank})`);
+                    node.right = new Node(value);
+                } else {
+                    //console.log('    recurse to ' + node.right.value.name);
+                    this._insertNode(node.right, value);
+                }
+            } else {
+                //console.log('ignoring bogus value', value);
+            }
         }
     }
 }

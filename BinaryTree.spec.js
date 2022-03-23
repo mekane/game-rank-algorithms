@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const { BinaryTree } = require('./BinaryTree');
+const {BinaryTree} = require('./BinaryTree');
 
 /**
  * @param number Number
@@ -14,7 +14,22 @@ function testValue(number) {
 
 describe('The BinaryTree class', () => {
     it('starts empty', () => {
+        const tree = new BinaryTree();
+        expect(tree.root).to.deep.equal({
+            left: null,
+            right: null,
+            value: null
+        });
+    });
 
+    it('inserts the provided value at the root', () => {
+        const value = testValue(4);
+        const tree = new BinaryTree(value);
+        expect(tree.root).to.deep.equal({
+            left: null,
+            right: null,
+            value
+        });
     });
 
     it('inserts the first value into the root', () => {
@@ -28,8 +43,7 @@ describe('The BinaryTree class', () => {
         const rootValue = testValue(5);
         const leftValue = testValue(2);
 
-        const tree = new BinaryTree();
-        tree.insert(rootValue);
+        const tree = new BinaryTree(rootValue);
         tree.insert(leftValue);
 
         expect(tree.root.left).to.deep.equal({
@@ -54,9 +68,74 @@ describe('The BinaryTree class', () => {
         });
     });
 
-    //TODO: test for equal values
-    //TODO: test for values that don't have a 'myRank' property
+    it(`ignores values that don't have a rank property`, () => {
+        const rootValue = testValue(5);
+        const bogusValue = {name: 'bogus'};
 
-    //TODO: insert two lefts
-    //TODO: insert two rights
+        const tree = new BinaryTree();
+        tree.insert(rootValue);
+        tree.insert(bogusValue);
+
+        expect(tree.root).to.deep.equal({
+            left: null,
+            right: null,
+            value: rootValue
+        });
+    });
+
+    //TODO: test for equal values
+
+    it('inserts two smaller values to the left', () => {
+        const rootValue = testValue(5);
+        const left1 = testValue(4);
+        const left2 = testValue(3);
+
+        const tree = new BinaryTree(rootValue);
+        tree.insert(left1);
+        tree.insert(left2);
+
+        const expectedTree = {
+            right: null,
+            value: rootValue,
+            left: {
+                right: null,
+                value: left1,
+                left: {
+                    right: null,
+                    value: left2,
+                    left: null
+                }
+            }
+        }
+
+        expect(tree.root).to.deep.equal(expectedTree);
+    });
+
+    it('inserts two larger values to the right', () => {
+        const rootValue = testValue(5);
+        const right1 = testValue(6);
+        const right2 = testValue(7);
+
+        const tree = new BinaryTree(rootValue);
+        tree.insert(right1);
+        tree.insert(right2);
+
+        const expectedTree = {
+            left: null,
+            value: rootValue,
+            right: {
+                left: null,
+                value: right1,
+                right: {
+                    right: null,
+                    value: right2,
+                    left: null
+                }
+            }
+        }
+
+        expect(tree.root).to.deep.equal(expectedTree);
+    })
 });
+
+//TODO keep the tree balanced
