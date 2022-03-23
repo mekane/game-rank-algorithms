@@ -1,55 +1,4 @@
-const games = [
-    {
-        name: 'Race for the Galaxy',
-        myRank: 1,
-        score: 0
-    },
-    {
-        name: 'Dune: Imperium',
-        myRank: 2,
-        score: 0
-    },
-    {
-        name: 'Agricola',
-        myRank: 3,
-        score: 0
-    },
-    {
-        name: 'Res Arcana',
-        myRank: 4,
-        score: 0
-    },
-    {
-        name: 'Kingdomino',
-        myRank: 5,
-        score: 0
-    },
-    {
-        name: 'Guess Who',
-        myRank: 6,
-        score: 0
-    },
-    {
-        name: 'Catan',
-        myRank: 7,
-        score: 0
-    },
-    {
-        name: 'The Un-game',
-        myRank: 8,
-        score: 0
-    },
-    {
-        name: 'Trash',
-        myRank: 9,
-        score: 0
-    },
-    {
-        name: 'Trash',
-        myRank: 9,
-        score: 0
-    }
-];
+const games = require('./games.js');
 
 function compare(a, b) {
     if (typeof a !== 'object' || typeof b !== 'object')
@@ -132,4 +81,4 @@ while (!sorted) {
 }
 
 console.log('');
-console.log(`Took ${step} total steps with ${comparisons} total comparisons`);
+console.log(`Ranking ${games.length} games took ${step} total steps with ${comparisons} total comparisons`);

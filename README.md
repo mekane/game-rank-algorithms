@@ -21,3 +21,20 @@ quickly and perform well, but after simulating it I noticed that it works well a
 scores fluctuate up and down in the middle. It seems predictable but it can take a while to settle out and it gets a lot
 worse as the list grows.
 
+| # items | steps | comparisons |
+|---------|-------|-------------|
+| 4, 5 | 4 | 5 |
+| 6, 7 | 8 | 14 |
+| 8, 9 | 12 | 30 |
+| 10, 11 | 18 | 55 |
+| 12, 13 | 26 | 91 |
+| 14, 15 |  34 | 140 |
+| 18, 19 | 54 | 285 |
+| 50 | 390 | 5525 |
+| 100 | 1520 | 42925 |
+
+This is pretty bad: steps is O(n^2 / 6.25) and comparisons is O(n^3 / 23)
+Ideally we especially want good performance on the comparisons since those will be direct user actions.
+
+## 02 Tree Sort
+
