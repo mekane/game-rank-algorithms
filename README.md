@@ -7,9 +7,10 @@ software engineer with a computer science degree.
 It seems like an odd kind of sorting problem right off the bat since you're showing the user two choices
 and asking them to pick which one they like better, and doing that until the list is "sorted". So you're
 actually trying to discover the values to sort by while you're sorting. But as long as the user chooses 
-consistently the list will be sorted and the values will "appear". I think though that some algorithms might
-not work for this since you need to know if they are larger or smaller than a specific value and all we can 
-ever do is compare two items relative to each other. (Maybe that does work - need to read up more on algorithms)
+consistently the list will be sorted and the values will "appear". Any comparison sort should work for
+this purpose, and ideally we want to optimize for fewest number of comparisons.
+
+It appears that the best algorithms are O(n log(n)) for comparisons, and best case requires at least log(n!).
 
 ## 01 Scored Buckets Sort
 
@@ -37,4 +38,7 @@ This is pretty bad: steps is O(n^2 / 6.25) and comparisons is O(n^3 / 23)
 Ideally we especially want good performance on the comparisons since those will be direct user actions.
 
 ## 02 Tree Sort
+
+It seems like a tree sort should be among the most efficient, and I wanted to try writing one. Hacked together
+my own version.
 

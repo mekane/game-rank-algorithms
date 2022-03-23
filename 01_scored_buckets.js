@@ -1,4 +1,5 @@
 const games = require('./games.js');
+const { shuffle } = require('./common.js');
 
 function compare(a, b) {
     if (typeof a !== 'object' || typeof b !== 'object')
@@ -25,13 +26,6 @@ function sortIntoBuckets() {
     });
 
     return newBuckets;
-}
-
-function shuffle() {
-    for (let i = 0; i < 16; i++) {
-        const index = Math.floor(Math.random() * games.length);
-        games.push(games.splice(index, 1)[0]);
-    }
 }
 
 let step = 1;
@@ -71,7 +65,8 @@ function printBuckets() {
 
 
 /*========== MAIN PROGRAM ==========*/
-shuffle();
+games.forEach(g => g.score = 0);
+shuffle(games);
 printBuckets();
 
 let sorted = false;
