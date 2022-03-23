@@ -21,6 +21,33 @@ class BinaryTree {
         if (value)
             _insertNode(this.root, value);
     }
+
+    /**
+     * Visit all nodes in order, LNR
+     * Left, Node, Right
+     *
+     * @return Array
+     */
+    sortedList() {
+        const result = [];
+
+        visit(this.root);
+
+        return result;
+
+        function visit(node) {
+            //console.log(`visit ${node.value.name}`);
+            if (node.left) {
+                visit(node.left);
+            }
+
+            result.push(node.value);
+
+            if (node.right) {
+                visit(node.right);
+            }
+        }
+    }
 }
 
 /* private */

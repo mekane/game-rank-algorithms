@@ -176,6 +176,31 @@ describe('The BinaryTree class', () => {
         expect(tree.root).to.deep.equal(expectedTree);
     });
 
+    it('can export a sorted list of values', () => {
+        const tree = new BinaryTree(testValue(3));
+        tree.insert(testValue(2));
+        tree.insert(testValue(4));
+
+        const expectedValues = [
+            testValue(2),
+            testValue(3),
+            testValue(4)
+        ];
+        expect(tree.sortedList()).to.deep.equal(expectedValues);
+    });
+
+    it('exports a longer list of items, sorted', () => {
+        const values = [4, 2, 3, 6, 8, 5, 1, 7];
+
+        const tree = new BinaryTree();
+        values.forEach(v => tree.insert(testValue(v)));
+
+        const sortedList = values.slice().sort();
+        const expectedList = sortedList.map(testValue);
+
+        expect(tree.sortedList()).to.deep.equal(expectedList);
+    });
 });
+
 
 //TODO keep the tree balanced
