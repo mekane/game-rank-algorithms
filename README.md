@@ -44,3 +44,11 @@ my own version. Made a class to hold the data, unit tested it, and wrote a scrip
 a bunch of different lists of varying lengths into the tree. Averaged the data and confirmed
 that the number of comparisons required is O(N log N).
 
+The tree sort works great and was surprisingly easy to make work, especially once I got a nice data structure
+to work with. I think it would be a pain to utilize within a web app though. You'd have to break up the insertion
+algorithm and be able to jump in and out of it to get comparison results. And the sorting down the tree would mean
+each time you added / ranked a new game you'd always start with the first one you added and follow a predictable path.
+This might not be so bad, but I can see it being nice to switch up the order and be able to compare the games in a 
+more "random" order. The tree would also need to be balanced to avoid a super lopsided and wonky setup, if you happened
+to rank your favorite or least-favorite game first, for example.
+
