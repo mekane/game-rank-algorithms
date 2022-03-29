@@ -52,3 +52,21 @@ This might not be so bad, but I can see it being nice to switch up the order and
 more "random" order. The tree would also need to be balanced to avoid a super lopsided and wonky setup, if you happened
 to rank your favorite or least-favorite game first, for example.
 
+## 03 Interruptable Merge Sort
+
+Pub Meeple said on Twitter that they use a merge sort. I looked at the alorithm and it's quite straightforward.
+Also similar to what I was imagining with my original attempt, except that it combines into pairs and then
+compares pairwise, wheras I was doing general group. Anyway I don't feel like I need to code up my own basic
+merge sort because I understand how it works. What I'm interested here is code that will do a merge sort but
+can start and stop / be interrupted at any point during the algorithm. The motivation for this is to make it
+work within a web app and be able to receive user input for the comparisons. It should be fine to use a promise
+to await the answer to a given comparison, but the user could also close the window at any time, so it would be
+great to keep the state in local storage so they can come back to it. And also it would be slick to use a redux-style
+pattern to allow undo / redo.
+
+So this means we need a data structure that holds the current lists being sorted, the indexes we're trying to compare
+at, and some notion of the "answer" to a given comparison. I imagine a dictionary of pairs would be cool, to have a
+permanent record of the answers, but might not be necessary. Then we need a "next step" function that takes the state
+and does the next step of the loop on it. Will need a fairly small list of data points and a manual step-through of the
+sort algorithm to test against.
+
