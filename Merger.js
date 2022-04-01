@@ -27,7 +27,7 @@ function newSort(listOfGames) {
 function step(oldState, answer) {
     const pairsToSort = JSON.parse(JSON.stringify(oldState.pairsToSort));
 
-    const { pairIndex, list0Index, list1Index } = oldState.nextComparison;
+    const {pairIndex, list0Index, list1Index} = oldState.nextComparison;
     const pair = pairsToSort[pairIndex];
     const list0 = pair[list0Index];
     const list1 = pair[list1Index];
@@ -35,12 +35,16 @@ function step(oldState, answer) {
     if (answer < 0)
         list0.unshift(list1.pop())
     else
-        list1.push(list0.pop())
+        list0.push(list1.pop())
+
+    let nextPairIndex = pairIndex + 1;
+    if (nextPairIndex >= pairsToSort.length)
+        nextPairIndex = 0;
 
     return {
         pairsToSort,
         nextComparison: {
-            pairIndex: pairIndex + 1,
+            pairIndex: nextPairIndex,
             list0Index: 0,
             list1Index: 1
         },

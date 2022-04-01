@@ -70,3 +70,11 @@ permanent record of the answers, but might not be necessary. Then we need a "nex
 and does the next step of the loop on it. Will need a fairly small list of data points and a manual step-through of the
 sort algorithm to test against.
 
+Read up on iterative merge sort, which is what I want - a non-recursive version. Messed around
+with it on paper since most of the explanations get real obtuse real fast. They all start out
+with a very generic description and then jump immediately to defining variables called 
+L, R, m, n, i, j, A, and B without explaining what those are for. Very annoying.
+
+Made a file called iterativeMergeSort with a test file just to build the function to do
+it so I get a good grip on the loops. Then I'll be able to build the step-by-step state of doing it.
+

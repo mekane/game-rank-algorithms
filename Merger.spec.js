@@ -31,29 +31,54 @@ describe('Starting a new sort', () => {
 });
 
 describe('iterating the next step', () => {
-    it('passes in a previous state and the answer to the next comparison', () => {
-        const initialState = newSort(testInput);
-        const nextState = step(initialState, -1);
+    const initialState = newSort(testInput);
 
-        const expectedState = {
-            pairsToSort: [
-                [
-                    ['test3', 'test4'],
-                    [],
-                ],
-                [
-                    ['test1'],
-                    ['test2']
-                ]
+    const stateAfterOneStep = {
+        pairsToSort: [
+            [
+                ['test3', 'test4'],
+                [],
             ],
-            nextComparison: {
-                pairIndex: 1,
-                list0Index: 0,
-                list1Index: 1
-            },
-            done: false
-        };
+            [
+                ['test1'],
+                ['test2']
+            ]
+        ],
+        nextComparison: {
+            pairIndex: 1,
+            list0Index: 0,
+            list1Index: 1
+        },
+        done: false
+    };
 
-        expect(nextState).to.deep.equal(expectedState);
+    const stateAfterTwoSteps = {
+        pairsToSort: [
+            [
+                ['test3', 'test4'],
+                [],
+            ],
+            [
+                ['test1', 'test2'],
+                []
+            ]
+        ],
+        nextComparison: {
+            pairIndex: 0,
+            list0Index: 0,
+            list1Index: 1
+        },
+        done: false
+    };
+
+    it('passes in a previous state and the answer to the next comparison', () => {
+        const nextState = step(initialState, -1);
+        expect(nextState).to.deep.equal(stateAfterOneStep);
     });
+
+    it('applies the nextComparison indexes to the next step', () => {
+        const nextState = step(stateAfterOneStep, 1);
+        expect(nextState).to.deep.equal(stateAfterTwoSteps);
+    });
+
 });
