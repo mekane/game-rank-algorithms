@@ -1,19 +1,12 @@
 function newSort(listOfGames) {
-    const pairsToSort = listOfGames.reduce((prev, current, i) => {
-        if (i % 2 === 0)
-            prev.push([[current]])
-        else
-            prev[prev.length - 1].push([current])
-        return prev;
-    }, []);
 
     return {
-        pairsToSort,
-        nextComparison: {
-            pairIndex: 0,
-            list0Index: 0,
-            list1Index: 1
-        },
+        originalList: listOfGames,
+        workingList: listOfGames.map(g => [g]),
+        listSize: 1,
+        listIndex: 0,
+        mergeIndexA: 0,
+        mergeIndexB: 0,
         done: false
     }
 }
@@ -25,6 +18,40 @@ function newSort(listOfGames) {
  * -1 = item 0 larger, 1 = item 1 larger
  */
 function step(oldState, answer) {
+    if (oldState.done)
+        return oldState;
+
+    let {listIndex, listSize} = oldState;
+    const workingList = oldState.workingList.slice();
+
+    const nextListSize = listSize * 2;
+    //console.log(`[Outer] next listSize: ${nextListSize} >= ${oldState.originalList.length}: (${nextListSize >= oldState.originalList.length})`)
+    if (nextListSize >= oldState.originalList.length) { //outer loop done
+        return {
+            originalList: oldState.originalList,
+            listIndex,
+            listSize,
+            workingList,
+            done: true,
+        }
+    }
+
+    //console.log(`    [Inner] next listIndex: ${listIndex + 2} >= ${workingList.length}: (${listIndex + 2 >= workingList.length})`)
+    //list iterator inner loop check increment
+    if ((listIndex + 2) >= workingList.length) { //outer loop
+        listSize = nextListSize;
+        listIndex = 0;
+    } else { //inner loop
+        listIndex += 2;
+    }
+
+    return {
+        originalList: oldState.originalList,
+        listIndex,
+        listSize,
+        workingList
+    }
+    /*
     const pairsToSort = JSON.parse(JSON.stringify(oldState.pairsToSort));
 
     const {pairIndex, list0Index, list1Index} = oldState.nextComparison;
@@ -50,6 +77,7 @@ function step(oldState, answer) {
         },
         done: false,
     }
+ */
 }
 
 module.exports = {
