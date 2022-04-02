@@ -9,7 +9,7 @@ describe('Starting a new sort', () => {
 
         const expectedState = {
             originalList: testInput,
-            workingList: [
+            subLists: [
                 ['test4'],
                 ['test3'],
                 ['test1'],
@@ -66,6 +66,41 @@ describe('iterating the outer loop', () => {
     });
 });
 
+describe('Iterating the inner merge list loops', () => {
+    it.only('iterates once for two items', () => {
+        const originalList = ['Two', 'One'];
+        const state0 = newSort(originalList);
+        const state1 = step(state0, +1);
+        console.log(state1);
+        expect(state1).to.deep.equal({
+            originalList,
+            listSize: 1,
+            listIndex: 0,
+            subLists: [
+                ['Two'], ['One']
+            ],
+            result: ['One', 'Two'],
+            done: true
+        })
+    })
+
+    it('iterates twice for three items', () => {
+        const originalList = ['Two', 'One', 'Three'];
+        const state0 = newSort(originalList);
+        const state1 = step(state0, 1);
+        expect(state1).to.deep.equal({
+            originalList,
+            listSize: 1,
+            listIndex: 2,
+            subLists: [
+                ['One', 'Two']
+            ],
+            done: false
+        })
+    })
+})
+
+
 function doIterations(state0, number) {
     let state = state0;
     for (let i = 0; i < number; i++) {
@@ -73,56 +108,3 @@ function doIterations(state0, number) {
     }
     return state;
 }
-
-describe.skip('iterating the next step', () => {
-    const initialState = newSort(testInput);
-
-    const stateAfterOneStep = {
-        pairsToSort: [
-            [
-                ['test3', 'test4'],
-                [],
-            ],
-            [
-                ['test1'],
-                ['test2']
-            ]
-        ],
-        nextComparison: {
-            pairIndex: 1,
-            list0Index: 0,
-            list1Index: 1
-        },
-        done: false
-    };
-
-    const stateAfterTwoSteps = {
-        pairsToSort: [
-            [
-                ['test3', 'test4'],
-                [],
-            ],
-            [
-                ['test1', 'test2'],
-                []
-            ]
-        ],
-        nextComparison: {
-            pairIndex: 0,
-            list0Index: 0,
-            list1Index: 1
-        },
-        done: false
-    };
-
-    it('passes in a previous state and the answer to the next comparison', () => {
-        const nextState = step(initialState, -1);
-        expect(nextState).to.deep.equal(stateAfterOneStep);
-    });
-
-    it('applies the nextComparison indexes to the next step', () => {
-        const nextState = step(stateAfterOneStep, 1);
-        expect(nextState).to.deep.equal(stateAfterTwoSteps);
-    });
-
-});

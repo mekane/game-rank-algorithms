@@ -26,70 +26,83 @@ function merge(listA, listB = []) {
 }
 
 function mergeSort(listToSort) {
+    console.log('Iterative Merge Sort', listToSort);
     let listSize = 1;
 
     let working = listToSort.slice();
     working = partition(working, listSize);
 
     while (listSize < listToSort.length) {
+        console.log(`[Outer Loop Open ${listSize} < ${listToSort.length}]`)
         let subLists = working;
         working = [];
 
-        for (let list = 0 ; list < subLists.length ; list += 2) {
+        for (let listIndex = 0; listIndex < subLists.length; listIndex += 2) {
+            console.log(`  [Inner Loop Open ${listIndex} < ${subLists.length}]`)
             //console.log(`merge lists ${list}, ${list+1}`, subLists[list], subLists[list+1]);
-            const result = innerMerge(subLists[list], subLists[list+1]);
-            //console.log('  ', result);
+
+            //merge function ------
+            const result = [];
+            const listA = subLists[listIndex];
+            const listB = subLists[listIndex+1] || [];
+
+            let mergeIndexA = 0;
+            let mergeIndexB = 0;
+
+            while (mergeIndexA < listA.length && mergeIndexB < listB.length) {
+                console.log(`    [Merge Loop Open ${mergeIndexA} < ${listA.length}, ${mergeIndexB} < ${listB.length}]`)
+                let a = 'debug';
+                //console.log(`{ compare A[${i}] and B[${j}]: (${listA[i]}, ${listB[j]})`)
+                if (listA[mergeIndexA] < listB[mergeIndexB]) {
+                    a = -1;
+                    console.log('      push list A')
+                    result.push(listA[mergeIndexA++])
+                } else {
+                    a = +1;
+                    console.log('      push list B')
+                    result.push(listB[mergeIndexB++])
+                }
+
+                output(a);
+                console.log(`    [Merge Loop Close ${mergeIndexA}, ${mergeIndexB}]`)
+            }
+
+            // copy leftovers
+            while (mergeIndexA < listA.length) {
+                console.log('      fill from rest of A')
+                result.push(listA[mergeIndexA++])
+            }
+            while (mergeIndexB < listB.length) {
+                console.log('      fill from rest of B')
+                result.push(listB[mergeIndexB++])
+            }
+            //-------- end merge
+
             working.push(result);
+
             //console.log('->', working);
 
+            function output(answer) {
+                const state = {
+                    result,
+                    subLists,
+                    working,
+                    listSize,
+                    listIndex,
+                    mergeIndexA,
+                    mergeIndexB,
+                    //answer,
+                };
+                console.log('      ',JSON.stringify(state, null, 8));
+                console.log('\n');
 
-            function innerMerge(listA, listB = []) {
-                let i = 0, j = 0;
-                const result = [];
-
-                while (i < listA.length && j < listB.length) {
-                    //console.log(`{ compare A[${i}] and B[${j}]: (${listA[i]}, ${listB[j]})`)
-                    if (listA[i] < listB[j]) {
-                        result.push(listA[i++])
-                        output(i, j, -1);
-                    }
-                    else {
-                        result.push(listB[j++])
-                        output(i, j, -1);
-                    }
-                }
-
-                // copy leftovers
-                while (i < listA.length) {
-                    //console.log(' * auto-push rest of A')
-                    result.push(listA[i++])
-                }
-                while (j < listB.length) {
-                    //console.log(' * auto-push rest of B')
-                    result.push(listB[j++])
-                }
-
-                return result;
-
-                function output(i, j, answer) {
-                    const state = {
-                        lists: subLists,
-                        working,
-                        mergingListA: list,
-                        mergingListB: list + 1,
-                        listA,
-                        listB,
-                        indexA: i,
-                        indexB: j,
-                        answer,
-                        result
-                    };
-                    //console.dir(state);
-                }
             }
+
+            console.log(`  [Inner Loop Close - listIndex: ${listIndex}]`)
         }
 
         listSize *= 2;
+        console.log(`[Outer Loop Close - listSize: ${listSize}]`)
     }
 
     return working[0];
