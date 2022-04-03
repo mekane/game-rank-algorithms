@@ -17,16 +17,21 @@ describe('Starting a new sort', () => {
             ],
             listSize: 1,
             listIndex: 0,
-            mergeIndexA: 0,
-            mergeIndexB: 0,
             result: [],
             done: false
         };
 
         expect(newState).to.deep.equal(expectedState);
         expect(newState.originalList).to.equal(testInput);
-    });
-});
+    })
+
+    it('adds merge index properties when it starts mering', () => {
+        const newState = newSort(testInput)
+        const nextState = step(newState, -1, true)
+        expect(nextState).to.have.property('mergeIndexA', 0)
+        expect(nextState).to.have.property('mergeIndexB', 0)
+    })
+})
 
 describe('the step function', () => {
     it('takes a previous state and returns a new one', () => {

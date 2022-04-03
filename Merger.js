@@ -8,8 +8,6 @@ function newSort(listOfGames) {
         subLists: listOfGames.map(g => [g]),
         listSize: 1,
         listIndex: 0,
-        mergeIndexA: 0,
-        mergeIndexB: 0,
         result,
         done
     }
@@ -35,26 +33,33 @@ function step(oldState, answer, debugEnabled = false) {
     let mergeIndexB = oldState.mergeIndexB || 0;
 
     let result = oldState.result.slice() || [];
+    let currentMerge = (oldState.currentMerge || []).slice();
+
     if (mergeIndexA < listA.length && mergeIndexB < listB.length) { //Merge loop still going
         debug(`    [Merge Loop ${mergeIndexA} < ${listA.length}, ${mergeIndexB} < ${listB.length}]`)
         if (answer < 0) {
             debug('      push list A')
-            result.push(listA[mergeIndexA++])
+            currentMerge.push(listA[mergeIndexA++])
         } else {
             debug('      push list B')
-            result.push(listB[mergeIndexB++])
+            currentMerge.push(listB[mergeIndexB++])
         }
     }
 
     if (mergeIndexA >= listA.length || mergeIndexB >= listB.length) { //merge loop is done
         while (mergeIndexA < listA.length) {
             debug('      AAA fill from rest of A')
-            result.push(listA[mergeIndexA++])
+            currentMerge.push(listA[mergeIndexA++])
         }
         while (mergeIndexB < listB.length) {
             debug('      BBB fill from rest of B')
-            result.push(listB[mergeIndexB++])
+            currentMerge.push(listB[mergeIndexB++])
         }
+
+        result.push(currentMerge);
+        // currentMerge = [];
+        mergeIndexA = 0;
+        mergeIndexB = 0;
     }
 
     //TODO: how will the UI know the next comparison to offer? - maybe we should try to compute it and if we can't then we know to keep working
