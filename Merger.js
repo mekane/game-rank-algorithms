@@ -26,7 +26,7 @@ function step(oldState, answer, debugEnabled = false) {
         return oldState;
 
     let {listIndex, listSize} = oldState;
-    const subLists = oldState.subLists.slice();
+    let subLists = oldState.subLists.slice();
 
     const listA = subLists[listIndex];
     const listB = subLists[listIndex + 1] || [];
@@ -34,7 +34,7 @@ function step(oldState, answer, debugEnabled = false) {
     let mergeIndexA = oldState.mergeIndexA || 0;
     let mergeIndexB = oldState.mergeIndexB || 0;
 
-    let result = oldState.result || [];
+    let result = oldState.result.slice() || [];
     if (mergeIndexA < listA.length && mergeIndexB < listB.length) { //Merge loop still going
         debug(`    [Merge Loop ${mergeIndexA} < ${listA.length}, ${mergeIndexB} < ${listB.length}]`)
         if (answer < 0) {
@@ -80,6 +80,8 @@ function step(oldState, answer, debugEnabled = false) {
     if ((listIndex + 2) >= subLists.length) { //outer loop
         listSize = nextListSize;
         listIndex = 0;
+        subLists = result;
+        result = [];
     } else { //inner loop
         listIndex += 2;
     }
@@ -89,6 +91,8 @@ function step(oldState, answer, debugEnabled = false) {
         listIndex,
         listSize,
         subLists,
+        mergeIndexA,
+        mergeIndexB,
         result,
         done: false
     }

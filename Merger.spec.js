@@ -19,6 +19,7 @@ describe('Starting a new sort', () => {
             listIndex: 0,
             mergeIndexA: 0,
             mergeIndexB: 0,
+            result: [],
             done: false
         };
 
@@ -27,9 +28,30 @@ describe('Starting a new sort', () => {
     });
 });
 
+describe('the step function', () => {
+    it('takes a previous state and returns a new one', () => {
+        const initialState = newSort(['1', '2', '3']);
+        const newState = step(initialState, 0);
+        Object.keys(initialState).forEach(prop => {
+            expect(prop in newState, 'check ' + prop).to.equal(true, 'has ' + prop)
+        })
+    })
+
+    it('does not modify the old state', () => {
+        const initialState = newSort(['1', '2', '3']);
+        const deepFreeze = require('deep-freeze');
+        deepFreeze(initialState);
+
+        function nextStep() {
+            step(initialState, 0);
+        }
+        expect(nextStep).not.to.throw();
+    })
+})
+
 describe('iterating the outer loop', () => {
-    const threePairs = ['a', 'a', 'b', 'b', 'c', 'c'];
-    const state0 = newSort(threePairs);
+    const testList = ['a', 'b', 'c', 'd', 'e', 'f'];
+    const state0 = newSort(testList);
 
     it('increments listIndex by two and keeps size the same', () => {
         expect(state0.listSize).to.equal(1);
@@ -43,11 +65,23 @@ describe('iterating the outer loop', () => {
         expect(state2.listSize).to.equal(1);
     });
 
-    it('restarts listIndex at zero and doubles list size when listIndex hits the end', () => {
+    it('restarts listIndex and doubles size when listIndex hits the end', () => {
         const state3 = doIterations(state0, 3);
         expect(state3.listIndex).to.equal(0);
         expect(state3.listSize).to.equal(2);
     });
+
+    it('updates sub-lists and resets results when listIndex hits the end', () => {
+        const state4 = doIterations(state0, 4, true);
+        expect(state4.result).to.deep.equal([]);
+
+        expect(state4.subLists).to.deep.equal([
+            ['a', 'b'],
+            ['c', 'd'],
+            ['e', 'f']
+        ])
+    });
+
 
     it('marks the routine done when listSize would exceed the original list length', () => {
         const state9 = doIterations(state0, 9);
@@ -66,7 +100,7 @@ describe('iterating the outer loop', () => {
     });
 });
 
-describe('Unit tests for various length lists', () => {
+describe.skip('Unit tests for various length lists', () => {
     it('iterates zero times for one item', () => {
         const originalList = [1];
         const degenerateState = newSort(originalList);
@@ -98,7 +132,7 @@ describe('Unit tests for various length lists', () => {
         })
     })
 
-    it.only('iterates twice for three items', () => {
+    it('iterates twice for three items', () => {
         const originalList = ['Two', 'One', 'Three'];
         const state0 = newSort(originalList);
         const state1 = step(state0, 1);
@@ -125,13 +159,59 @@ describe('Unit tests for various length lists', () => {
             done: true
         })
     })
+
+    it('iterates four times for four items', () => {
+        const originalList = ['Two', 'One', 'Three', 'Four'];
+        const state0 = newSort(originalList);
+        const state1 = step(state0, 1);
+        expect(state1).to.deep.equal({
+            originalList,
+            listSize: 1,
+            listIndex: 2,
+            subLists: [
+                ['Two'], ['One'], ['Three'], ['Four']
+            ],
+            result: ['One', 'Two'],
+            done: false
+        })
+
+        const state2 = step(state1, -1);
+        expect(state2).to.deep.equal({
+            originalList,
+            listSize: 1,
+            listIndex: 2,
+            subLists: [
+                ['One', 'Two'], ['Three', 'Four']
+            ],
+            result: [],
+            done: false
+        })
+
+        const state3 = step(state2, -1);
+        expect(state3).to.deep.equal({
+            originalList,
+            listSize: 2,
+            listIndex: 0,
+            subLists: [
+                ['One', 'Two'], ['Three', 'Four']
+            ],
+            mergeIndexA: 1,
+            mergeIndexB: 0,
+            result: ['One'],
+            done: false
+        })
+
+    })
 })
 
 
-function doIterations(state0, number) {
+function doIterations(state0, number, debug = false) {
     let state = state0;
-    for (let i = 0; i < number; i++) {
-        state = step(state, 0);
+    for (let i = 1; i <= number; i++) {
+        state = step(state, -1, debug);
+        if (debug){
+            console.log(`=== Iteration ${i} result:`, state)
+        }
     }
     return state;
 }
