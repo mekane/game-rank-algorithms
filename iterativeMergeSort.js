@@ -49,6 +49,7 @@ function mergeSort(listToSort) {
             let mergeIndexA = 0;
             let mergeIndexB = 0;
 
+            console.log(`    Merge? ${mergeIndexA} < ${listA.length}, ${mergeIndexB} < ${listB.length}`)
             while (mergeIndexA < listA.length && mergeIndexB < listB.length) {
                 console.log(`    [Merge Loop Open ${mergeIndexA} < ${listA.length}, ${mergeIndexB} < ${listB.length}]`)
                 let a = 'debug';

@@ -66,12 +66,26 @@ describe('iterating the outer loop', () => {
     });
 });
 
-describe('Iterating the inner merge list loops', () => {
-    it.only('iterates once for two items', () => {
+describe('Unit tests for various length lists', () => {
+    it('iterates zero times for one item', () => {
+        const originalList = [1];
+        const degenerateState = newSort(originalList);
+        expect(degenerateState).to.deep.equal({
+            originalList,
+            listSize: 1,
+            listIndex: 0,
+            subLists: [[1]],
+            mergeIndexA: 0,
+            mergeIndexB: 0,
+            result: [1],
+            done: true
+        })
+    })
+
+    it('iterates once for two items', () => {
         const originalList = ['Two', 'One'];
         const state0 = newSort(originalList);
         const state1 = step(state0, +1);
-        console.log(state1);
         expect(state1).to.deep.equal({
             originalList,
             listSize: 1,
@@ -84,7 +98,7 @@ describe('Iterating the inner merge list loops', () => {
         })
     })
 
-    it('iterates twice for three items', () => {
+    it.only('iterates twice for three items', () => {
         const originalList = ['Two', 'One', 'Three'];
         const state0 = newSort(originalList);
         const state1 = step(state0, 1);
@@ -93,9 +107,22 @@ describe('Iterating the inner merge list loops', () => {
             listSize: 1,
             listIndex: 2,
             subLists: [
-                ['One', 'Two']
+                ['Two'], ['One'], ['Three']
             ],
+            result: ['One', 'Two'],
             done: false
+        })
+
+        const state2 = step(state1, 0);
+        expect(state2).to.deep.equal({
+            originalList,
+            listSize: 1,
+            listIndex: 2,
+            subLists: [
+                ['Two'], ['One'], ['Three']
+            ],
+            result: ['One', 'Two', 'Three'],
+            done: true
         })
     })
 })

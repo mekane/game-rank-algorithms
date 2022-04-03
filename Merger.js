@@ -1,5 +1,8 @@
 function newSort(listOfGames) {
 
+    const done = listOfGames.length === 1;
+    const result = done ? listOfGames : [];
+
     return {
         originalList: listOfGames,
         subLists: listOfGames.map(g => [g]),
@@ -7,7 +10,8 @@ function newSort(listOfGames) {
         listIndex: 0,
         mergeIndexA: 0,
         mergeIndexB: 0,
-        done: false
+        result,
+        done
     }
 }
 
@@ -17,7 +21,7 @@ function newSort(listOfGames) {
  * @param answer { Number } the comparison result of the oldState's "nextComparison" pair
  * -1 = item 0 larger, 1 = item 1 larger
  */
-function step(oldState, answer) {
+function step(oldState, answer, debugEnabled = false) {
     if (oldState.done)
         return oldState;
 
@@ -30,33 +34,37 @@ function step(oldState, answer) {
     let mergeIndexA = oldState.mergeIndexA || 0;
     let mergeIndexB = oldState.mergeIndexB || 0;
 
-    let result = [];
+    let result = oldState.result || [];
     if (mergeIndexA < listA.length && mergeIndexB < listB.length) { //Merge loop still going
-        console.log(`    [Merge Loop ${mergeIndexA} < ${listA.length}, ${mergeIndexB} < ${listB.length}]`)
+        debug(`    [Merge Loop ${mergeIndexA} < ${listA.length}, ${mergeIndexB} < ${listB.length}]`)
         if (answer < 0) {
-            console.log('      push list A')
+            debug('      push list A')
             result.push(listA[mergeIndexA++])
         } else {
-            console.log('      push list B')
+            debug('      push list B')
             result.push(listB[mergeIndexB++])
         }
     }
 
     if (mergeIndexA >= listA.length || mergeIndexB >= listB.length) { //merge loop is done
         while (mergeIndexA < listA.length) {
-            console.log('     AAA fill from rest of A')
+            debug('      AAA fill from rest of A')
             result.push(listA[mergeIndexA++])
         }
         while (mergeIndexB < listB.length) {
-            console.log('     BBB fill from rest of B')
+            debug('      BBB fill from rest of B')
             result.push(listB[mergeIndexB++])
         }
     }
 
+    //TODO: how will the UI know the next comparison to offer? - maybe we should try to compute it and if we can't then we know to keep working
 
     const nextListSize = listSize * 2;
-    //console.log(`[Outer] next listSize: ${nextListSize} >= ${oldState.originalList.length}: (${nextListSize >= oldState.originalList.length})`)
-    if (nextListSize >= oldState.originalList.length) { //outer loop done
+    debug(`[Outer] next listSize: ${nextListSize} >= ${oldState.originalList.length}: (${nextListSize >= oldState.originalList.length})`)
+
+    const exceededListSize = nextListSize >= oldState.originalList.length;
+    const sortedAllItems = result.length === oldState.originalList.length;
+    if (exceededListSize || sortedAllItems) { //outer loop done
         return {
             originalList: oldState.originalList,
             listIndex,
@@ -67,7 +75,7 @@ function step(oldState, answer) {
         }
     }
 
-    //console.log(`    [Inner] next listIndex: ${listIndex + 2} >= ${subLists.length}: (${listIndex + 2 >= subLists.length})`)
+    //debug(`    [Inner] next listIndex: ${listIndex + 2} >= ${subLists.length}: (${listIndex + 2 >= subLists.length})`)
     //list iterator inner loop check increment
     if ((listIndex + 2) >= subLists.length) { //outer loop
         listSize = nextListSize;
@@ -84,33 +92,11 @@ function step(oldState, answer) {
         result,
         done: false
     }
-    /*
-    const pairsToSort = JSON.parse(JSON.stringify(oldState.pairsToSort));
 
-    const {pairIndex, list0Index, list1Index} = oldState.nextComparison;
-    const pair = pairsToSort[pairIndex];
-    const list0 = pair[list0Index];
-    const list1 = pair[list1Index];
-
-    if (answer < 0)
-        list0.unshift(list1.pop())
-    else
-        list0.push(list1.pop())
-
-    let nextPairIndex = pairIndex + 1;
-    if (nextPairIndex >= pairsToSort.length)
-        nextPairIndex = 0;
-
-    return {
-        pairsToSort,
-        nextComparison: {
-            pairIndex: nextPairIndex,
-            list0Index: 0,
-            list1Index: 1
-        },
-        done: false,
+    function debug(...args) {
+        if (debugEnabled)
+            console.log(...args);
     }
- */
 }
 
 module.exports = {
