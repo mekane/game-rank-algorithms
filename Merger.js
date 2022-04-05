@@ -1,15 +1,19 @@
 function newSort(listOfGames) {
 
-    const done = listOfGames.length === 1;
-    const result = done ? listOfGames : [];
+    if (listOfGames.length === 1) {
+        return {
+            originalList: listOfGames,
+            result: listOfGames,
+            done: true
+        }
+    }
 
     return {
         originalList: listOfGames,
         subLists: listOfGames.map(g => [g]),
         listSize: 1,
         listIndex: 0,
-        result,
-        done
+        done: false
     }
 }
 
@@ -32,7 +36,7 @@ function step(oldState, answer, debugEnabled = false) {
     let mergeIndexA = oldState.mergeIndexA || 0;
     let mergeIndexB = oldState.mergeIndexB || 0;
 
-    let result = oldState.result.slice() || [];
+    let result = (oldState.result || [] ).slice();
     let currentMerge = (oldState.currentMerge || []).slice();
 
     if (mergeIndexA < listA.length && mergeIndexB < listB.length) { //Merge loop still going
@@ -60,34 +64,30 @@ function step(oldState, answer, debugEnabled = false) {
         currentMerge = [];
         mergeIndexA = null;
         mergeIndexB = null;
-    }
-    else {
-        console.log('  == Current Merge', currentMerge)
-        console.log('  == List A', listA)
-        console.log('  == List B', listB)
-        console.log()
-        //TODO: can we just return here and skip the currentMerge.length check below?
+    } else if (currentMerge.length) {
+        return {
+            originalList: oldState.originalList,
+            currentMerge,
+            mergeIndexA,
+            mergeIndexB,
+            listIndex,
+            listSize,
+            subLists,
+            result,
+            done: false
+        };
     }
 
     //TODO: how will the UI know the next comparison to offer? - maybe we should try to compute it and if we can't then we know to keep working
 
-    let nextListSize = listSize;
-
-    //TODO: skip this?
-    //don't do outer loop if merge is ongoing
-    if ( !currentMerge.length ) {
-         nextListSize *= 2;
-        debug(`[Outer] next listSize: ${nextListSize} >= ${oldState.originalList.length}: (${nextListSize >= oldState.originalList.length})`)
-    }
+    let nextListSize = listSize * 2;
+    debug(`[Outer] next listSize: ${nextListSize} >= ${oldState.originalList.length}: (${nextListSize >= oldState.originalList.length})`)
 
     const exceededListSize = nextListSize >= oldState.originalList.length;
     const sortedAllItems = result.length === oldState.originalList.length;
     if (exceededListSize || sortedAllItems) { //outer loop done
         return {
             originalList: oldState.originalList,
-            listIndex,
-            listSize,
-            subLists,
             result: result[0],
             done: true,
         }
@@ -96,6 +96,7 @@ function step(oldState, answer, debugEnabled = false) {
     debug(`    [Inner] next listIndex: ${listIndex + 2} >= ${subLists.length}: (${listIndex + 2 >= subLists.length})`)
     //list iterator inner loop check increment
     if ((listIndex + 2) >= subLists.length) { //outer loop
+        debug(`    outer loop check: ${listIndex + 2} >= ${subLists.length}`);
         listSize = nextListSize;
         listIndex = 0;
         subLists = result;
@@ -112,12 +113,6 @@ function step(oldState, answer, debugEnabled = false) {
         result,
         done: false
     };
-
-    if (currentMerge.length) {
-        nextState.currentMerge = currentMerge;
-        nextState.mergeIndexA = mergeIndexA;
-        nextState.mergeIndexB = mergeIndexB;
-    }
 
     return nextState;
 
