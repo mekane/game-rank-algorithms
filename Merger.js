@@ -36,7 +36,7 @@ function step(oldState, answer, debugEnabled = false) {
     let mergeIndexA = oldState.mergeIndexA || 0;
     let mergeIndexB = oldState.mergeIndexB || 0;
 
-    let result = (oldState.result || [] ).slice();
+    let sorted = (oldState.sorted || [] ).slice();
     let currentMerge = (oldState.currentMerge || []).slice();
 
     if (mergeIndexA < listA.length && mergeIndexB < listB.length) { //Merge loop still going
@@ -60,7 +60,7 @@ function step(oldState, answer, debugEnabled = false) {
             currentMerge.push(listB[mergeIndexB++])
         }
 
-        result.push(currentMerge);
+        sorted.push(currentMerge);
         currentMerge = [];
         mergeIndexA = null;
         mergeIndexB = null;
@@ -73,7 +73,7 @@ function step(oldState, answer, debugEnabled = false) {
             listIndex,
             listSize,
             subLists,
-            result,
+            sorted,
             done: false
         };
     }
@@ -84,11 +84,11 @@ function step(oldState, answer, debugEnabled = false) {
     debug(`[Outer] next listSize: ${nextListSize} >= ${oldState.originalList.length}: (${nextListSize >= oldState.originalList.length})`)
 
     const exceededListSize = nextListSize >= oldState.originalList.length;
-    const sortedAllItems = result.length === oldState.originalList.length;
+    const sortedAllItems = sorted.length === oldState.originalList.length;
     if (exceededListSize || sortedAllItems) { //outer loop done
         return {
             originalList: oldState.originalList,
-            result: result[0],
+            result: sorted[0],
             done: true,
         }
     }
@@ -99,8 +99,8 @@ function step(oldState, answer, debugEnabled = false) {
         debug(`    outer loop check: ${listIndex + 2} >= ${subLists.length}`);
         listSize = nextListSize;
         listIndex = 0;
-        subLists = result;
-        result = [];
+        subLists = sorted;
+        sorted = [];
     } else { //inner loop
         listIndex += 2;
     }
@@ -110,7 +110,7 @@ function step(oldState, answer, debugEnabled = false) {
         listIndex,
         listSize,
         subLists,
-        result,
+        sorted,
         done: false
     };
 

@@ -49,7 +49,7 @@ describe('the step function', () => {
 
 describe('The inner merge logic', () => {
     it('adds merge properties when it is mid-merge', () => {
-        const midMergeState = {
+        const aboutToMerge = {
             originalList: testInput,
             subLists: [
                 ['test3', 'test4'],
@@ -59,14 +59,13 @@ describe('The inner merge logic', () => {
             listIndex: 0,
             mergeIndexA: 0,
             mergeIndexB: 0,
-            result: [],
             done: false
         }
 
-        const nextState = step(midMergeState, +1, true)
+        const nextState = step(aboutToMerge, +1)
+        expect(nextState.currentMerge).to.deep.equal(['test1'])
         expect(nextState.mergeIndexA).to.equal(0)
         expect(nextState.mergeIndexB).to.equal(1)
-        expect(nextState.currentMerge).to.deep.equal(['test1'])
     })
 })
 
@@ -94,8 +93,7 @@ describe('iterating the outer loop', () => {
 
     it('updates sub-lists and resets results when listIndex hits the end', () => {
         const state4 = doIterations(state0, 4);
-        expect(state4.result).to.deep.equal([]);
-
+        expect(state4.sorted).to.deep.equal([]);
         expect(state4.subLists).to.deep.equal([
             ['a', 'b'],
             ['c', 'd'],
@@ -104,13 +102,13 @@ describe('iterating the outer loop', () => {
     });
 
     it('does nothing and returns the input state if done is true', () => {
-        const done = {
+        const doneState = {
             listSize: 1,
             listIndex: 0,
             done: true
         };
-        expect(step(done, 0)).to.equal(done);
-        expect(step(done, 0)).to.deep.equal(done);
+        expect(step(doneState, 0)).to.equal(doneState);
+        expect(step(doneState, 0)).to.deep.equal(doneState);
     });
 });
 
@@ -147,7 +145,7 @@ describe('Unit tests for various length lists', () => {
             subLists: [
                 ['Two'], ['One'], ['Three']
             ],
-            result: [['One', 'Two']],
+            sorted: [['One', 'Two']],
             done: false
         })
 
@@ -160,7 +158,7 @@ describe('Unit tests for various length lists', () => {
             subLists: [
                 ['One', 'Two'], ['Three']
             ],
-            result: [],
+            sorted: [],
             done: false
         })
 
@@ -176,7 +174,7 @@ describe('Unit tests for various length lists', () => {
             subLists: [
                 ['One', 'Two'], ['Three']
             ],
-            result: [],
+            sorted: [],
             done: false
         })
 
@@ -200,7 +198,7 @@ describe('Unit tests for various length lists', () => {
             subLists: [
                 ['Two'], ['One'], ['Three'], ['Four']
             ],
-            result: ['One', 'Two'],
+            sorted: ['One', 'Two'],
             done: false
         })
 
@@ -212,7 +210,6 @@ describe('Unit tests for various length lists', () => {
             subLists: [
                 ['One', 'Two'], ['Three', 'Four']
             ],
-            result: [],
             done: false
         })
 
@@ -226,10 +223,9 @@ describe('Unit tests for various length lists', () => {
             ],
             mergeIndexA: 1,
             mergeIndexB: 0,
-            result: ['One'],
+            sorted: ['One'],
             done: false
         })
-
     })
 })
 
