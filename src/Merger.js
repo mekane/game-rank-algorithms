@@ -8,10 +8,11 @@ function newSort(listOfGames, debugEnabled = false) {
         }
     }
 
+    const n = listOfGames.length;
+    const logN = Math.log2(n) - 1;
+    const guess = Math.max(1, logN * n);
+
     if (debugEnabled) {
-        const n = listOfGames.length;
-        const logN = Math.log2(n) - 1;
-        const guess = Math.max(1, logN * n);
         console.log(`Estimate ${guess} comparisons to sort ${n} items`)
     }
 
@@ -22,6 +23,7 @@ function newSort(listOfGames, debugEnabled = false) {
         listSize: 1,
         listIndex: 0,
         nextComparison: [subLists[0][0], subLists[1][0]],
+        guess,
         done: false
     }
 }

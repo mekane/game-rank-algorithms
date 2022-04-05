@@ -18,6 +18,7 @@ describe('Starting a new sort', () => {
             listSize: 1,
             listIndex: 0,
             nextComparison: ['test4', 'test3'],
+            guess: 4,
             done: false
         };
 
@@ -29,10 +30,8 @@ describe('Starting a new sort', () => {
 describe('the step function', () => {
     it('takes a previous state and returns a new one', () => {
         const initialState = newSort(['1', '2', '3']);
-        const newState = step(initialState, 0);
-        Object.keys(initialState).forEach(prop => {
-            expect(prop in newState, 'check ' + prop).to.equal(true, 'has ' + prop)
-        })
+        let newState = step(initialState, 0);
+        expect(newState).to.not.equal(initialState);
     })
 
     it('does not modify the old state', () => {
