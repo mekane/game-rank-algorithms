@@ -257,9 +257,19 @@ describe('Unit tests for various length lists', () => {
         })
     })
 
-    it.skip('successfully sorts a list of length 8', () => {
+    it('successfully sorts a list of length 8', () => {
         let state = newSort([3, 2, 1, 9, 5, 4, 10, 11]);
+        let answer = +1;
 
+        let steps = 0;
+        while (!state.done) {
+            [nextA, nextB] = state.nextComparison;
+            answer = nextA - nextB;
+            state = step(state, answer);
+            steps++;
+            //console.log(`Step ${steps}`)
+            //console.log(state);
+        }
     })
 })
 
