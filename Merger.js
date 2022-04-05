@@ -1,4 +1,4 @@
-function newSort(listOfGames) {
+function newSort(listOfGames, debugEnabled = false) {
 
     if (listOfGames.length === 1) {
         return {
@@ -6,6 +6,13 @@ function newSort(listOfGames) {
             result: listOfGames,
             done: true
         }
+    }
+
+    if (debugEnabled) {
+        const n = listOfGames.length;
+        const logN = Math.log2(n) - 1;
+        const guess = Math.max(1, logN * n);
+        console.log(`Estimate ${guess} comparisons to sort ${n} items`)
     }
 
     const subLists = listOfGames.map(g => [g]);
@@ -65,7 +72,7 @@ function step(oldState, answer, debugEnabled = false) {
         sorted.push(currentMerge);
     } else if (currentMerge.length) {
         const nextA = subLists[listIndex][mergeIndexA];
-        const nextB = subLists[listIndex+1][mergeIndexB];
+        const nextB = subLists[listIndex + 1][mergeIndexB];
 
         return {
             originalList: oldState.originalList,
@@ -109,7 +116,7 @@ function step(oldState, answer, debugEnabled = false) {
     }
 
     const nextA = subLists[listIndex][0];
-    const nextB = (subLists[listIndex+1] || [])[0];
+    const nextB = (subLists[listIndex + 1] || [])[0];
 
     /* TODO
     if (typeof nextB === 'undefined') {
