@@ -1,6 +1,6 @@
 function newSort(listOfGames, debugEnabled = false) {
 
-    if (listOfGames.length === 1) {
+    if (listOfGames.length <= 1) {
         return {
             originalList: listOfGames,
             result: listOfGames,
@@ -10,7 +10,7 @@ function newSort(listOfGames, debugEnabled = false) {
 
     const n = listOfGames.length;
     const logN = Math.log2(n) - 1;
-    const guess = Math.max(1, logN * n);
+    const guess = Math.max(1, Math.round(logN * n));
 
     if (debugEnabled) {
         console.log(`Estimate ${guess} comparisons to sort ${n} items`)
