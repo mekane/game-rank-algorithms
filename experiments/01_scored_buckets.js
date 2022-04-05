@@ -1,5 +1,5 @@
 const { games } = require('./games.js');
-const { shuffle } = require('./common.js');
+const { shuffle } = require('../src/common.js');
 
 function compare(a, b) {
     if (typeof a !== 'object' || typeof b !== 'object')

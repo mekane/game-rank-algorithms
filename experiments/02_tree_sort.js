@@ -1,5 +1,5 @@
 const {games, testList} = require('./games.js');
-const {shuffle} = require('./common');
+const {shuffle} = require('../src/common');
 const {BinaryTree} = require('./BinaryTree');
 
 /*========== MAIN PROGRAM ==========*/
