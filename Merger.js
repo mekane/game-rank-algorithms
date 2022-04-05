@@ -61,9 +61,6 @@ function step(oldState, answer, debugEnabled = false) {
         }
 
         sorted.push(currentMerge);
-        currentMerge = [];
-        mergeIndexA = null;
-        mergeIndexB = null;
     } else if (currentMerge.length) {
         return {
             originalList: oldState.originalList,

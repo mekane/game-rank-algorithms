@@ -67,6 +67,32 @@ describe('The inner merge logic', () => {
         expect(nextState.mergeIndexA).to.equal(0)
         expect(nextState.mergeIndexB).to.equal(1)
     })
+
+    it.skip('adds a "nextComparison" property for the first step', () => {
+        const state = newSort(['Two', 'One'])
+        expect(state.nextComparison).to.deep.equal(['Two', 'One'])
+    })
+
+    it.skip('adds a "nextComparison" property for the sub-lists', () => {
+        const aboutToMerge = {
+            originalList: testInput,
+            subLists: [
+                ['test3', 'test4'],
+                ['test1', 'test2']
+            ],
+            listSize: 2,
+            listIndex: 0,
+            mergeIndexA: 0,
+            mergeIndexB: 0,
+            done: false
+        }
+
+        const nextState = step(aboutToMerge, +1)
+        expect(nextState.nextComparison).to.deep.equal(['test3', 'test2'])
+    })
+
+    //TODO: add a test for a sorted list comparing against a sub-list
+
 })
 
 describe('iterating the outer loop', () => {
@@ -226,6 +252,11 @@ describe('Unit tests for various length lists', () => {
             sorted: ['One'],
             done: false
         })
+    })
+
+    it.skip('successfully sorts a list of length 8', () => {
+        let state = newSort([3, 2, 1, 9, 5, 4, 10, 11]);
+
     })
 })
 
