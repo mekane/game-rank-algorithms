@@ -17,6 +17,7 @@ describe('Starting a new sort', () => {
             ],
             listSize: 1,
             listIndex: 0,
+            nextComparison: ['test4', 'test3'],
             done: false
         };
 
@@ -68,12 +69,12 @@ describe('The inner merge logic', () => {
         expect(nextState.mergeIndexB).to.equal(1)
     })
 
-    it.skip('adds a "nextComparison" property for the first step', () => {
+    it('adds a "nextComparison" property for the first step', () => {
         const state = newSort(['Two', 'One'])
         expect(state.nextComparison).to.deep.equal(['Two', 'One'])
     })
 
-    it.skip('adds a "nextComparison" property for the sub-lists', () => {
+    it('adds a "nextComparison" property for the sub-lists', () => {
         const aboutToMerge = {
             originalList: testInput,
             subLists: [
@@ -91,8 +92,7 @@ describe('The inner merge logic', () => {
         expect(nextState.nextComparison).to.deep.equal(['test3', 'test2'])
     })
 
-    //TODO: add a test for a sorted list comparing against a sub-list
-
+    //TODO: add a test for a more in-progress merge
 })
 
 describe('iterating the outer loop', () => {
@@ -172,6 +172,7 @@ describe('Unit tests for various length lists', () => {
                 ['Two'], ['One'], ['Three']
             ],
             sorted: [['One', 'Two']],
+            nextComparison: ['Three', undefined],
             done: false
         })
 
@@ -185,10 +186,11 @@ describe('Unit tests for various length lists', () => {
                 ['One', 'Two'], ['Three']
             ],
             sorted: [],
+            nextComparison: ['One', 'Three'],
             done: false
         })
 
-        //TODO: skip this too
+        //TODO: skip this too?
         const state3 = step(state2, -1);
         expect(state3).to.deep.equal({
             originalList,
@@ -200,6 +202,7 @@ describe('Unit tests for various length lists', () => {
             subLists: [
                 ['One', 'Two'], ['Three']
             ],
+            nextComparison: ['Two', 'Three'],
             sorted: [],
             done: false
         })

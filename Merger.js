@@ -8,11 +8,13 @@ function newSort(listOfGames) {
         }
     }
 
+    const subLists = listOfGames.map(g => [g]);
     return {
         originalList: listOfGames,
-        subLists: listOfGames.map(g => [g]),
+        subLists,
         listSize: 1,
         listIndex: 0,
+        nextComparison: [subLists[0][0], subLists[1][0]],
         done: false
     }
 }
@@ -36,7 +38,7 @@ function step(oldState, answer, debugEnabled = false) {
     let mergeIndexA = oldState.mergeIndexA || 0;
     let mergeIndexB = oldState.mergeIndexB || 0;
 
-    let sorted = (oldState.sorted || [] ).slice();
+    let sorted = (oldState.sorted || []).slice();
     let currentMerge = (oldState.currentMerge || []).slice();
 
     if (mergeIndexA < listA.length && mergeIndexB < listB.length) { //Merge loop still going
@@ -62,6 +64,9 @@ function step(oldState, answer, debugEnabled = false) {
 
         sorted.push(currentMerge);
     } else if (currentMerge.length) {
+        const nextA = subLists[listIndex][mergeIndexA];
+        const nextB = subLists[listIndex+1][mergeIndexB];
+
         return {
             originalList: oldState.originalList,
             currentMerge,
@@ -71,6 +76,7 @@ function step(oldState, answer, debugEnabled = false) {
             listSize,
             subLists,
             sorted,
+            nextComparison: [nextA, nextB],
             done: false
         };
     }
@@ -102,16 +108,23 @@ function step(oldState, answer, debugEnabled = false) {
         listIndex += 2;
     }
 
-    const nextState = {
+    const nextA = subLists[listIndex][0];
+    const nextB = (subLists[listIndex+1] || [])[0];
+
+    /* TODO
+    if (typeof nextB === 'undefined') {
+        skip this step - iterate next
+    }*/
+
+    return {
         originalList: oldState.originalList,
         listIndex,
         listSize,
         subLists,
         sorted,
+        nextComparison: [nextA, nextB],
         done: false
     };
-
-    return nextState;
 
     function debug(...args) {
         if (debugEnabled)
