@@ -110,7 +110,7 @@ function mergeSort(listToSort = [], debugEnabled = false) {
 
     function debug(...args) {
         if (debugEnabled)
-            debug(...args);
+            console.log(...args);
     }
 }
 
