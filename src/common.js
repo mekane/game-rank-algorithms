@@ -6,6 +6,14 @@ function shuffle(list) {
     }
 }
 
+function pad(value, size) {
+    let str = String(value);
+    while (str.length < size)
+        str = ' ' + str;
+    return str;
+}
+
 module.exports = {
+    pad,
     shuffle
 }

@@ -1,3 +1,4 @@
+const {pad} = require('../src/common');
 const {newSort, step} = require("../src/Merger.js");
 
 const data = {
@@ -88,10 +89,3 @@ Object.keys(data).forEach(key => {
 
     console.log(`${name} ${items} ${guess} ${count}`);
 })
-
-function pad(value, size) {
-    let str = String(value);
-    while (str.length < size)
-        str = ' ' + str;
-    return str;
-}
