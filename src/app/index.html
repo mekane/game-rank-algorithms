@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <title>Game Ranking App</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         html {
             height: 100%;
         }
@@ -11,12 +15,39 @@
         body {
             background: #333;
             display: grid;
-            grid-template-rows: auto 30px;
+            font-family: arial, sans-serif;
+            grid-template-rows: 2fr 9fr 1fr;
             height: 100%;
-            padding: 80px 60px 0;
+            padding: 40px 40px 0;
+            margin: 0;
         }
 
-        .app {
+        .site-header {
+            align-self: start;
+            text-align: center;
+        }
+
+        .app .app__setup,
+        .app .app__sort,
+        .app .app__results {
+            display: none;
+        }
+
+        .app.setup .app__setup,
+        .app.sort .app__sort,
+        .app.results .app__results {
+            display: block;
+        }
+
+        .app__setup {
+
+        }
+
+        .app__sort {
+
+        }
+
+        .app__results {
         }
 
         .app__choices {
@@ -27,22 +58,49 @@
             min-width: 640px;
             margin: 0 auto;
             text-align: center;
-            width: 50%;
+            width: 75%;
         }
 
-        .app__choicea,
-        .app__choiceb,
+        .app__sort-choicea,
+        .app__sort-choiceb,
         .app__undo {
-            background: #ccc;
             cursor: pointer;
             padding: 40px;
             text-align: center;
         }
 
+        .app__sort-choicea,
+        .app__sort-choiceb {
+            width: 90%;
+        }
+
+        .app__sort-choicea {
+            background: #9c9;
+        }
+
+        .app__sort-choiceb {
+            background: #99c;
+        }
+
+        .app__sort-choicea .title,
+        .app__sort-choiceb .title {
+            font-size: 4rem;
+        }
+
+        .app__undo {
+            background: #666;
+            display: block;
+            font-size: 3rem;
+            margin: 80px auto 0;
+            min-width: 120px;
+            width: 15%;
+        }
+
         header {
             color: white;
             font-size: 1.85rem;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
         }
 
         .hidden {
@@ -50,6 +108,7 @@
         }
 
         footer {
+            align-self: end;
             color: white;
             font-size: 20px;
             text-align: center;
@@ -63,45 +122,47 @@
     </style>
 </head>
 <body>
-<div class="app">
-    <header class="app__info"></header>
-    <div class="app__choices">
-        <div class="app__choicea">Choice A</div>
-        <div class="app__choiceb">Choice B</div>
+<header class="site-header">
+    Game Ranker
+    <button onclick="section('setup')">Setup</button>
+    <button onclick="section('sort')">Sort</button>
+    <button onclick="section('results')">Results</button>
+</header>
+<main class="app sort">
+    <div class="app__setup">
+        Setup list
     </div>
-    <div class="app__undo">Undo</div>
-</div>
 
-<footer>
+    <div class="app__sort">
+        <header class="app__sort-info">Which do you prefer?</header>
+        <div class="app__choices">
+            <div class="app__sort-choicea">
+                <div class="title">Choice A</div>
+                <p>
+                    Click here, press 'A' or left arrow to choose this
+                </p>
+            </div>
+            <div class="app__sort-choiceb">
+                <div class="title">Choice B</div>
+                <p>
+                    Click here, press 'B' or right arrow to choose this
+                </p>
+            </div>
+        </div>
+        <div class="app__undo">Undo</div>
+    </div>
+
+    <div class="app__results">
+        <header>Your Ranked List</header>
+        <ol class="app__results-list"></ol>
+    </div>
+</main>
+<footer class="site-footer">
     This page &copy;2022 by <a href="https://github.com/mekane/game-rank-algorithms">Marty Kane</a> Original idea by Pub Meeple
 </footer>
 </body>
 <script src="./rank.bundle.js"></script>
 <script>
-    const choiceA = document.querySelector('.app__choicea');
-    const choiceB = document.querySelector('.app__choiceb');
-    const undoButton = document.querySelector('.app__undo');
-
-    console.log('Page load', choiceA, choiceB);
-
-    choiceA.addEventListener('click', answerA);
-    choiceB.addEventListener('click', answerB);
-    undoButton.addEventListener('click', undo);
-
-    function answerA() {
-        console.log('next state with -1')
-        updateChoices()
-    }
-
-    function answerB() {
-        console.log('next state with +1')
-        updateChoices()
-    }
-
-    function undo() {
-        console.log('Undo last rank')
-    }
-
     //TODO: import / input these
     const games = [
         { name: 'Agricola' },
@@ -112,15 +173,52 @@
         { name: 'Carcassonee' },
     ]
 
-    //TODO: localstorage
+    //TODO: initialize from localstorage
     const states = [];
     let state = Rank.newSort(games);
-    updateChoices();
 
-    function updateChoices() {
+    const choiceA = document.querySelector('.app__sort-choicea');
+    const choiceB = document.querySelector('.app__sort-choiceb');
+    const undoButton = document.querySelector('.app__undo');
+
+    setupSortInterface();
+    updateInterface();
+
+    function setupSortInterface() {
+        choiceA.addEventListener('click', answerA);
+        choiceB.addEventListener('click', answerB);
+        undoButton.addEventListener('click', undo);
+
+        function answerA() {
+            choose(-1);
+        }
+
+        function answerB() {
+            choose(+1);
+        }
+    }
+
+    function undo() {
+        console.log('Undo last rank')
+    }
+
+    function choose(option) {
+        const newState = Rank.step(state, option);
+        if (newState !== state) {
+
+        }
+    }
+
+    function section(which) {
+        const main = document.querySelector('main.app');
+        main.classList.remove('setup', 'sort', 'results');
+        main.classList.add(which);
+    }
+
+    function updateInterface() {
         const [optionA, optionB] = state.nextComparison;
-        choiceA.textContent = optionA.name;
-        choiceB.textContent = optionB.name;
+        choiceA.querySelector('.title').textContent = optionA.name;
+        choiceB.querySelector('.title').textContent = optionB.name;
     }
 </script>
 </html>
