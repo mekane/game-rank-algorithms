@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Game Ranking App</title>
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            background: #333;
+            display: grid;
+            grid-template-rows: auto 30px;
+            height: 100%;
+            padding: 80px 60px 0;
+        }
+
+        .app {
+        }
+
+        .app__choices {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            justify-content: center;
+            justify-items: center;
+            min-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+            width: 50%;
+        }
+
+        .app__choicea,
+        .app__choiceb,
+        .app__undo {
+            background: #ccc;
+            cursor: pointer;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header {
+            color: white;
+            font-size: 1.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            color: white;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        footer > a,
+        footer > a:link,
+        footer > a:visited {
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="app__info"></header>
+    <div class="app__choices">
+        <div class="app__choicea">Choice A</div>
+        <div class="app__choiceb">Choice B</div>
+    </div>
+    <div class="app__undo">Undo</div>
+</div>
+
+<footer>
+    This page &copy;2022 by <a href="https://github.com/mekane/game-rank-algorithms">Marty Kane</a> Original idea by Pub Meeple
+</footer>
+</body>
+<script src="./rank.bundle.js"></script>
+<script>
+    const choiceA = document.querySelector('.app__choicea');
+    const choiceB = document.querySelector('.app__choiceb');
+    const undoButton = document.querySelector('.app__undo');
+
+    console.log('Page load', choiceA, choiceB);
+
+    choiceA.addEventListener('click', answerA);
+    choiceB.addEventListener('click', answerB);
+    undoButton.addEventListener('click', undo);
+
+    function answerA() {
+        console.log('next state with -1')
+        updateChoices()
+    }
+
+    function answerB() {
+        console.log('next state with +1')
+        updateChoices()
+    }
+
+    function undo() {
+        console.log('Undo last rank')
+    }
+
+    //TODO: import / input these
+    const games = [
+        { name: 'Agricola' },
+        { name: 'Power Grid' },
+        { name: 'Star Wars: Rebellion' },
+        { name: 'Race for the Galaxy' },
+        { name: 'Gloomhaven' },
+        { name: 'Carcassonee' },
+    ]
+
+    //TODO: localstorage
+    const states = [];
+    let state = Rank.newSort(games);
+    updateChoices();
+
+    function updateChoices() {
+        const [optionA, optionB] = state.nextComparison;
+        choiceA.textContent = optionA.name;
+        choiceB.textContent = optionB.name;
+    }
+</script>
+</html>
