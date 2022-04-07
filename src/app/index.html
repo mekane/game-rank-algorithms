@@ -58,12 +58,12 @@
             min-width: 640px;
             margin: 0 auto;
             text-align: center;
-            width: 75%;
         }
 
         .app__sort-choicea,
         .app__sort-choiceb,
         .app__undo {
+            color: #222;
             cursor: pointer;
             padding: 40px;
             text-align: center;
@@ -75,11 +75,21 @@
         }
 
         .app__sort-choicea {
+            background: #7a7;
+        }
+
+        .app__sort-choicea:hover {
             background: #9c9;
+            color: #000;
         }
 
         .app__sort-choiceb {
+            background: #77a;
+        }
+
+        .app__sort-choiceb:hover {
             background: #99c;
+            color: #000;
         }
 
         .app__sort-choicea .title,
@@ -96,6 +106,11 @@
             width: 15%;
         }
 
+        .app__undo:hover {
+            background: #777;
+            color: #000;
+        }
+
         header {
             color: white;
             font-size: 1.85rem;
@@ -103,8 +118,19 @@
             text-align: center;
         }
 
+        .disabled {
+            background: #222;
+            color: #111;
+            pointer-events: none;
+        }
+
         .hidden {
             display: none;
+        }
+
+        .app__results-list {
+            color: white;
+            font-size: 24px;
         }
 
         footer {
@@ -171,7 +197,7 @@
         {name: 'Star Wars: Rebellion'},
         {name: 'Race for the Galaxy'},
         {name: 'Gloomhaven'},
-        {name: 'Carcassonee'},
+        {name: 'Carcassonne'},
     ]
 
     //TODO: initialize from localstorage
@@ -200,7 +226,10 @@
     }
 
     function undo() {
-        console.log('Undo last rank')
+        if (states.length) {
+            state = states.pop();
+            updateInterface();
+        }
     }
 
     function choose(option) {
@@ -218,20 +247,31 @@
         main.classList.add(which);
     }
 
+    function showResults() {
+        section('results')
+        const list = document.querySelector('.app__results-list');
+        list.innerHTML = '';
+        state.result.forEach(game => {
+            const li = document.createElement('li');
+            li.textContent = game.name;
+            list.appendChild(li);
+        });
+        console.log(`Originally guessed ${states[0].guess} and took ${states.length}`);
+    }
+
     function updateInterface() {
         if (state.done) {
-            section('results')
-            const list = document.querySelector('.app__results-list');
-            list.innerHTML = '';
-            state.result.forEach(game => {
-                const li = document.createElement('li');
-                li.textContent = game.name;
-                list.appendChild(li);
-            });
+            showResults();
         } else {
             const [optionA, optionB] = state.nextComparison;
             choiceA.querySelector('.title').textContent = optionA.name;
             choiceB.querySelector('.title').textContent = optionB.name;
+
+            if (states.length) {
+                undoButton.classList.remove('disabled');
+            } else {
+                undoButton.classList.add('disabled');
+            }
         }
     }
 </script>
