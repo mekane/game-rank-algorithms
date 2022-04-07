@@ -158,19 +158,20 @@
     </div>
 </main>
 <footer class="site-footer">
-    This page &copy;2022 by <a href="https://github.com/mekane/game-rank-algorithms">Marty Kane</a> Original idea by Pub Meeple
+    This page &copy;2022 by <a href="https://github.com/mekane/game-rank-algorithms">Marty Kane</a> Original idea by Pub
+    Meeple
 </footer>
 </body>
 <script src="./rank.bundle.js"></script>
 <script>
     //TODO: import / input these
     const games = [
-        { name: 'Agricola' },
-        { name: 'Power Grid' },
-        { name: 'Star Wars: Rebellion' },
-        { name: 'Race for the Galaxy' },
-        { name: 'Gloomhaven' },
-        { name: 'Carcassonee' },
+        {name: 'Agricola'},
+        {name: 'Power Grid'},
+        {name: 'Star Wars: Rebellion'},
+        {name: 'Race for the Galaxy'},
+        {name: 'Gloomhaven'},
+        {name: 'Carcassonee'},
     ]
 
     //TODO: initialize from localstorage
@@ -205,8 +206,10 @@
     function choose(option) {
         const newState = Rank.step(state, option);
         if (newState !== state) {
-
+            states.push(state);
+            state = newState;
         }
+        updateInterface();
     }
 
     function section(which) {
@@ -216,9 +219,20 @@
     }
 
     function updateInterface() {
-        const [optionA, optionB] = state.nextComparison;
-        choiceA.querySelector('.title').textContent = optionA.name;
-        choiceB.querySelector('.title').textContent = optionB.name;
+        if (state.done) {
+            section('results')
+            const list = document.querySelector('.app__results-list');
+            list.innerHTML = '';
+            state.result.forEach(game => {
+                const li = document.createElement('li');
+                li.textContent = game.name;
+                list.appendChild(li);
+            });
+        } else {
+            const [optionA, optionB] = state.nextComparison;
+            choiceA.querySelector('.title').textContent = optionA.name;
+            choiceB.querySelector('.title').textContent = optionB.name;
+        }
     }
 </script>
 </html>
